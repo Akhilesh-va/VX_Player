@@ -66,8 +66,13 @@ class VideoFileRepoImpl : VideoFileRepo {
 
     override suspend fun getAllFolders(application: Application): Flow<Map<String, List<VideoFile>>> {
         val allVideos = getAllVideos(application).first()
-        val videosByFolders = allVideos.groupBy { File(it.path).parentFile?:"Unknown Folder" }
+        val videosByFolders = allVideos.groupBy { videoFile ->
+            File(videoFile.path).parentFile?.absolutePath ?: "Unknown Folder"
+        }
 
+            return flow {
+                emit(videosByFolders)
+            }
 
     }
 }
